@@ -34,6 +34,12 @@ const credintialsLogin = async (payload: Partial<IUser>) => {
     envVars.JWT_ACCESS_EXPIRE
   );
 
+  const refreshToken = generateToken(
+    jwtPayload,
+    envVars.JWT_REFRESH_SECRET,
+    envVars.JWT_REFRESH_SECRET
+  );
+
   return {
     accessToken,
   };
