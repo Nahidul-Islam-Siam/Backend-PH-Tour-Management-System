@@ -15,7 +15,7 @@ export const checkAuth =
       }
       const verifiedToken = verifyToken(
         accessToken,
-        envVars.JWT_ACCEESS_SECRET
+        envVars.JWT_ACCESS_SECRET
       ) as JwtPayload;
       if (!verifiedToken) {
         throw new AppError("No token Received", 403);

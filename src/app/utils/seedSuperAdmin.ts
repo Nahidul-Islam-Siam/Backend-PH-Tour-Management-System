@@ -13,7 +13,6 @@ export const seedSuperAdmin = async () => {
       return;
     }
 
-    console.log("Trying to create Super Admin....");
 
     const hashedPassword = await bcryptjs.hash(
       envVars.SUPER_ADMIN_PASSWORD,
@@ -35,8 +34,8 @@ export const seedSuperAdmin = async () => {
     };
 
     const superAdmin = await User.create(payload);
-    console.log("Super Admin Created Successfully");
-    console.log(superAdmin);
+    // console.log("Super Admin Created Successfully");
+    // console.log(superAdmin);
     return superAdmin;
   } catch (error) {
     console.log(error);
