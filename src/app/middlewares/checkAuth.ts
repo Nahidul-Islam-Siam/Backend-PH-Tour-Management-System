@@ -27,6 +27,8 @@ export const checkAuth =
         throw new AppError("You are not authorized", 403);
       }
 
+      req.user = verifiedToken;
+
       console.log(verifiedToken);
 
       next();
