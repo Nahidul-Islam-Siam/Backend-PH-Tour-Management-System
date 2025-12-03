@@ -3,8 +3,7 @@ import { IUser } from "../user/user.interface";
 import httpStatus from "http-status-codes";
 import User from "../user/user.model";
 import bcryptjs from "bcryptjs";
-import { generateToken } from "../../utils/jwt";
-import { envVars } from "../../config/env";
+import { createUserToken } from "../../utils/userToken";
 const credintialsLogin = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
 
@@ -23,27 +22,36 @@ const credintialsLogin = async (payload: Partial<IUser>) => {
     throw new AppError("Incorrect Password", httpStatus.BAD_REQUEST);
   }
 
-  const jwtPayload = {
-    email: isUserExist.email,
-    role: isUserExist.role,
-    userId: isUserExist._id,
-  };
-  const accessToken = generateToken(
-    jwtPayload,
-    envVars.JWT_ACCESS_SECRET,
-    envVars.JWT_ACCESS_EXPIRE
-  );
+  const userToken = createUserToken(isUserExist);
 
-  const refreshToken = generateToken(
-    jwtPayload,
-    envVars.JWT_REFRESH_SECRET,
-    envVars.JWT_REFRESH_SECRET
-  );
+  // const jwtPayload = {
+  //   email: isUserExist.email,
+  //   role: isUserExist.role,
+  //   userId: isUserExist._id,
+  // };
+  // const accessToken = generateToken(
+  //   jwtPayload,
+  //   envVars.JWT_ACCESS_SECRET,
+  //   envVars.JWT_ACCESS_EXPIRE
+  // );
+
+  // const refreshToken = generateToken(
+  //   jwtPayload,
+  //   envVars.JWT_REFRESH_SECRET,
+  //   envVars.JWT_REFRESH_EXPIRED
+  // );
+
+  const userObj = isUserExist.toObject() as Partial<IUser>;
+  delete userObj.password;
 
   return {
-    accessToken,
+    accessToken: userToken.accessToken,
+    refreshToken: userToken.refreshToken,
+    user: userObj,
   };
 };
+
+
 
 //
 
