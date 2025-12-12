@@ -7,8 +7,10 @@ import { globalErrorHandler } from './app/middlewares/globalErrorhandler';
 import httpStatus from 'http-status-codes';
 import notFound from './app/middlewares/notFound';
 import { AuthRoutes } from './app/modules/auth/auth.route';
+import cookieParser from 'cookie-parser';
 const app = express();
 
+app.use(cookieParser());
 app.use(express.json());
 app.use("/api/v1/user", UserRoutes)
 app.use("/api/v1/auth", AuthRoutes)

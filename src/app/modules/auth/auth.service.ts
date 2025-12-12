@@ -3,45 +3,34 @@ import { IUser } from "../user/user.interface";
 import httpStatus from "http-status-codes";
 import User from "../user/user.model";
 import bcryptjs from "bcryptjs";
-import { createUserToken } from "../../utils/userToken";
+import { createNewAccessTokenWithRefreshToken, createUserToken } from "../../utils/userToken";
+
+
+
+// ============================================================================
+// LOGIN
+// ============================================================================
 const credintialsLogin = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
 
-  const isUserExist = await User.findOne({ email });
+  const user = await User.findOne({ email });
 
-  if (!isUserExist) {
-    throw new AppError("Email Does not exist", httpStatus.BAD_REQUEST);
+  if (!user) {
+    throw new AppError("Email does not exist", httpStatus.BAD_REQUEST);
   }
 
   const isPasswordMatch = await bcryptjs.compare(
     password as string,
-    isUserExist.password
+    user.password
   );
 
   if (!isPasswordMatch) {
-    throw new AppError("Incorrect Password", httpStatus.BAD_REQUEST);
+    throw new AppError("Incorrect password", httpStatus.BAD_REQUEST);
   }
 
-  const userToken = createUserToken(isUserExist);
+  const userToken = createUserToken(user);
 
-  // const jwtPayload = {
-  //   email: isUserExist.email,
-  //   role: isUserExist.role,
-  //   userId: isUserExist._id,
-  // };
-  // const accessToken = generateToken(
-  //   jwtPayload,
-  //   envVars.JWT_ACCESS_SECRET,
-  //   envVars.JWT_ACCESS_EXPIRE
-  // );
-
-  // const refreshToken = generateToken(
-  //   jwtPayload,
-  //   envVars.JWT_REFRESH_SECRET,
-  //   envVars.JWT_REFRESH_EXPIRED
-  // );
-
-  const userObj = isUserExist.toObject() as Partial<IUser>;
+  const userObj = user.toObject() as Partial<IUser>;
   delete userObj.password;
 
   return {
@@ -53,8 +42,24 @@ const credintialsLogin = async (payload: Partial<IUser>) => {
 
 
 
-//
+// ============================================================================
+// REFRESH TOKEN
+// ============================================================================
+const getNewAccessToken = async (refreshToken: string) => {
 
+const newAccessToken = await createNewAccessTokenWithRefreshToken(refreshToken)
+
+return {
+  accessToken: newAccessToken
+}
+};
+
+
+
+// ============================================================================
+// EXPORT
+// ============================================================================
 export const AuthServices = {
   credintialsLogin,
+  getNewAccessToken,
 };
