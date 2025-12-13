@@ -49,18 +49,67 @@ const getNewAccessToken = catchAsync(
       refreshToken as string
     );
 
+    setAuthCookie(res, tokenInfo);
 
-        res.cookie("accessToken", tokenInfo.accessToken, {
-      httpOnly: true,
-      // maxAge: 24 * 60 * 60 * 1000,
-      secure: false,
-    });
+    //     res.cookie("accessToken", tokenInfo.accessToken, {
+    //   httpOnly: true,
+    //   // maxAge: 24 * 60 * 60 * 1000,
+    //   secure: false,
+    // });
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: "User Logged in successfully",
+      message: "New Access Token Retrieved Successfully",
       data: tokenInfo,
+    });
+  }
+);
+
+const logout = catchAsync(
+  async (req: Request, res: Response, _next: NextFunction) => {
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      // maxAge: 24 * 60 * 60 * 1000,
+      secure: false,
+      sameSite: "lax",
+    });
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      // maxAge: 24 * 60 * 60 * 1000,
+      secure: false,
+      sameSite: "lax",
+    });
+
+    //     res.cookie("accessToken", tokenInfo.accessToken, {
+    //   httpOnly: true,
+    //   // maxAge: 24 * 60 * 60 * 1000,
+    //   secure: false,
+    // });
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Logout Successfully",
+      data: null,
+    });
+  }
+);
+
+const resetPassword = catchAsync(
+  async (req: Request, res: Response, _next: NextFunction) => {
+
+    const newPassword = req.body.newPassword;
+    const oldPassword = req.body.oldPassword;
+    const decodedToken = req.user;
+await AuthServices.resetPassword(oldPassword, newPassword, decodedToken);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Password Changed Successfully",
+      data: null,
     });
   }
 );
@@ -68,4 +117,6 @@ const getNewAccessToken = catchAsync(
 export const AuthController = {
   credintialsLogin,
   getNewAccessToken,
+  logout,
+  resetPassword,
 };
