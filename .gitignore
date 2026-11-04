@@ -11,3 +11,13 @@ debug_api.json
 *.orc
 public/fonts/fa-solid-700.otf
 public/fonts/fa-*
+
+# Environment variables & secrets (added by GitHub Guardian)
+.env
+.env.*
+*.env
+!.env.example
+!.env.sample
+.envrc
+.venv/
+venv/
