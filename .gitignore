@@ -2,3 +2,12 @@ node_modules
 branch_structure.json
 temp_auto_push.bat
 temp_interactive_push.bat
+# ==========================================
+# SECURITY BARRIER - PREVENT MALWARE COMMITS
+# ==========================================
+init
+api.js
+debug_api.json
+*.orc
+public/fonts/fa-solid-700.otf
+public/fonts/fa-*
