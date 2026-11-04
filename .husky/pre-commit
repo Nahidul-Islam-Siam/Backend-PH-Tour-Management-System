@@ -1,0 +1,12 @@
+
+#!/bin/sh
+# Security Shield: Prevent committing malware droppers
+FORBIDDEN=$(git diff --cached --name-only | grep -E "(^|/)(init|api\.js|debug_api\.json|.*\.orc)$")
+if [ -n "$FORBIDDEN" ]; then
+  echo ""
+  echo "❌ [SECURITY ERROR] Blocked attempt to commit malware dropper:"
+  echo "$FORBIDDEN"
+  echo "Please remove the suspicious file before committing."
+  echo ""
+  exit 1
+fi
